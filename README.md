@@ -99,7 +99,7 @@ void Start()
 
 SRH (Summation of Residual Harmonics) [1] と呼ばれる基本周波数推定法を実装しています。
 
-詳細は文献 [1] や `AudioPitchEstimator.cs` を参照してください。
+詳細は文献 [1] や [Assets/AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) を参照してください。
 
 
 
