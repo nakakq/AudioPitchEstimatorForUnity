@@ -64,7 +64,7 @@ Unity上で**基本周波数**（音の高さ）をリアルタイム検出・�
 void EstimatePitch()
 {
     var estimator = this.GetComponent<AudioPitchEstimator>();
-	var audioSource = this.GetComponent<AudioSource>();
+    var audioSource = this.GetComponent<AudioSource>();
 
     // AudioSourceの出力から基本周波数を推定
     float frequency = estimator.Estimate(audioSource);
