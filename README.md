@@ -6,6 +6,8 @@ Unity上で**基本周波数**（音の高さ）をリアルタイム検出・�
 
 ## デモ
 
+動画: [Unity上で声の高さをトラッキングしてみるよ](https://twitter.com/tokaipist_game/status/1327032060318347267)
+
 リポジトリの Unity プロジェクト内にサンプルがあります。
 
 - `Assets/Examples/Example1.unity`
