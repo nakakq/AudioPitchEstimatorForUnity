@@ -1,8 +1,10 @@
 # Audio Pitch Estimator for Unity
 
-A simple C# script to estimate the **fundamental frequency** from AudioSource.
+A simple C# script to estimate **fundamental frequency** from Unity's AudioSource component.
 
-This script doesn't require any external dependencies. Just copy [AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) on your Asset directory.
+Just copy [AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) to your Asset directory. This script doesn't require any external dependencies except for built-in Unity components.
+
+Originally I made it for speech and singing, but it may be applied to some single-note instrument sounds (e.g. guitar tuner).
 
 ## Demo
 
@@ -12,7 +14,7 @@ This repository has 2 examples:
 
 - `Assets/Examples/Example1.unity`
   - Estimation with **audio file**.
-  - Includes sample audio with clear rights (my singing of a public domain song).
+  - Includes sample audio (my singing of a public domain song).
 - `Assets/Examples/Example2.unity`
   - Estimation with **real-time audio from microphone**.
   - Note: There is a delay of ~1 second because the audio signal is buffered to the AudioSource before estimation.
@@ -25,38 +27,40 @@ There are several parameters:
 
 ![inspector](./readme/inspector.png)
 
-- **Frequency Min**: The lowest frequency that can estimate.
-- **Frequency Max**: The highest frequency that can estimate.
-- **Harmonics To Use**: Number of overtones.
-- **Smoothing Width**: Frequency bandwidth of spectral smoothing filter.
-- **Threshold SRH**: Threshold to determine if . The larger value, the stricter the judge.
+- `Frequency Min`: The lowest frequency that can estimate.
+- `Frequency Max`: The highest frequency that can estimate.
+- `Harmonics To Use`: Number of overtones to use for estimation.
+- `Smoothing Width`: Frequency bandwidth of spectral smoothing filter.
+- `Threshold SRH`: Threshold to judge silence or not.
 
-### Tuning FAQ
+The boundary frequencies `Frequency Min` and `Frequency Max` should be set as nessesary and sufficient range. For example, if the fundamental frequency never exceeds 600 Hz (in your application), set `Frequency Max` to 600 Hz or above.
 
-#### Frequency estimation results can easily get jittery / Quickly switches between two frequencies
+### Tuning Tips
 
-Lowering **Frequency Max** will improve it by eliminating unwanted high-frequency candidates.
+#### Quickly switches between two frequencies
 
-#### Easily misidentified at the tail of the speech
+Decreasing `Frequency Max` will fix the problem by eliminating unwanted high-frequency candidates.
 
-Stricter **Threshold SRH** (Silence Judgment) may improve it.
-If this does not help, try tweaking **Harmonics To Use** and **Smoothing Width**.
+#### Misidentifies silence at the tail of your speech
 
-#### Sometimes the voice is not detected
+Increasing `Threshold SRH` may help.
+If it does not change, try tweaking `Harmonics To Use` and `Smoothing Width`.
 
-The silence judgment is too strict. Please lower the value of **Threshold SRH**.
-If this does not help, try tweaking **Harmonics To Use** and **Smoothing Width**.
+#### Sometimes doesn't detect your speech
 
-#### Computational load is too high
+Decreasing `Threshold SRH` may help.
+If it does not change, try tweaking `Harmonics To Use` and `Smoothing Width`.
 
-It is effective to increase the time interval of estimation (ex. lower the `EstimateRate` of `PitchVisualizer.cs` to `8`).
+#### CPU load is too high
+
+It is effective to decrease your estimation update rate (e.g. lower the `PitchVisualizer.estimateRate` to `8`).
 
 ## Example Code
 
 Audio data can be obtained via **AudioSource**.
-If you want to use the audio from the microphones, please use [Microphone.Start()](https://docs.unity3d.com/ja/current/ScriptReference/Microphone.Start.html), a Unity built-in function.
+If you want to use the audio from the microphones, please use [Microphone.Start()](https://docs.unity3d.com/ja/current/ScriptReference/Microphone.Start.html), a built-in method in Unity.
 
-`AudioPitchEstimator.Estimate()` takes AudioSource as a parameter and will return an estimate of the fundamental frequency.
+`AudioPitchEstimator.Estimate()` takes an argument for target AudioSource and will return the estimate of fundamental frequency in the input audio signal.
 
 ```cs
 void EstimatePitch()
@@ -69,7 +73,7 @@ void EstimatePitch()
 
     if (float.IsNaN(frequency))
     {
-        // Algorithm didn't detect fundamental frequency (ex. silence).
+        // Algorithm didn't detect fundamental frequency (e.g. silence).
     }
     else
     {
@@ -95,9 +99,9 @@ void Start()
 
 ## Algorithm
 
-This code implements a modified version of SRH (Summation of Residual Harmonics) [1].
+This package implements a modified version of SRH (Summation of Residual Harmonics) [1], a spectrum-based pitch estimation algorithm.
 
-Please see the paper [1] and [Assets/AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) for details.
+Please see the original paper [1] and [AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) for details.
 
 ## License
 

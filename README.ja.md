@@ -2,6 +2,8 @@
 
 Unity上で**基本周波数**（音の高さ）をリアルタイム検出・推定するスクリプトです。
 
+スクリプトファイル [AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) を Asset ディレクトリへコピーするだけで導入できます。Unityの基本コンポーネント以外に外部依存関係はありません。
+
 ## デモ
 
 動画: [Unity上で声の高さをトラッキングしてみるよ](https://twitter.com/tokaipist_game/status/1327032060318347267)
@@ -21,38 +23,41 @@ Unity上で**基本周波数**（音の高さ）をリアルタイム検出・�
 
 ![inspector](./readme/inspector.png)
 
-- **Frequency Min**: 推定時の最低周波数です。
-- **Frequency Max**: 推定時の最大周波数です。
-- **Harmonics To Use**: 推定に使用する倍音の個数です。
-- **Smoothing Width**: スペクトルの移動平均平滑化に用いる周波数バンドの幅です。
-- **Threshold SRH**: 基本周波数が検出されたか否かを決める閾値です。この値が高いほど、判定が厳しくなります。
+- `Frequency Min`: 推定時の最低周波数です。
+- `Frequency Max`: 推定時の最大周波数です。
+- `Harmonics To Use`: 推定に使用する倍音の個数です。
+- `Smoothing Width`: スペクトルの移動平均平滑化に用いる周波数バンドの幅です。
+- `Threshold SRH`: 基本周波数が検出されたか否かを決める閾値です。この値が高いほど、判定が厳しくなります。
+
+限界周波数である `Frequency Min` と `Frequency Max` は、必要十分な範囲に設定してください。
+たとえば、基本周波数が 600 Hz 以上にならないことが事前にわかっている場合は `Frequency Max` を 600 Hz 以上付近に設定します。
 
 ### 調整のTips
 
-#### ブレやすい、候補が同時に2つ出現している
+#### 候補がブレる、同時に2つ出現する
 
-周波数の高い候補が除外されるよう **Frequency Max** を下げてください。
+周波数の高い候補が除外されるよう `Frequency Max` を下げてください。
 
 #### 発声の末尾などで誤判定が起きる
 
-無音判定を厳しくすると改善することがあります。 **Threshold SRH** の値を上げてください。
-それでも改善しない場合は、様子を見ながら **Harmonics To Use** や **Smoothing Width** を調整してください。
+無音判定を厳しくすると改善することがあります。 `Threshold SRH` の値を上げてください。
+それでも改善しない場合は、様子を見ながら `Harmonics To Use` や `Smoothing Width` を調整してください。
 
 #### たまに判定されないことがある
 
-無音判定が厳しすぎる状態です。 **Threshold SRH** の値を下げてください。
-それでも改善しない場合は、様子を見ながら **Harmonics To Use** や **Smoothing Width** を調整してください。
+無音判定が厳しすぎる状態です。 `Threshold SRH` の値を下げてください。
+それでも改善しない場合は、様子を見ながら `Harmonics To Use` や `Smoothing Width` を調整してください。
 
 #### 計算負荷が高すぎる
 
-推定する時間間隔を広げると効果的です（例: `PitchVisualizer` の `EstimateRate` を `8` に下げる）。
+推定する時間間隔を広げると効果的です（例: `PitchVisualizer.estimateRate` を `8` に下げる）。
 
 ## コード例
 
 音声データは **AudioSource** 経由で取得します。
 マイクの音声を利用したい場合は、Unity に組み込まれている [Microphone.Start()](https://docs.unity3d.com/ja/current/ScriptReference/Microphone.Start.html) を併用してください。
 
- `AudioPitchEstimator.Estimate()` に AudioSource を渡すと、基本周波数を推定して返します。
+ `AudioPitchEstimator.Estimate()` の引数に AudioSource を渡すと、基本周波数を推定して返します。
 
 ```cs
 void EstimatePitch()
@@ -89,13 +94,13 @@ void Start()
 
 ## アルゴリズム
 
-SRH (Summation of Residual Harmonics) [1] と呼ばれる基本周波数推定法を実装しています。
+スペクトルベースの基本周波数推定法である SRH (Summation of Residual Harmonics) [1] に改変を加えた手法を実装しています。
 
-詳細は文献 [1] や [Assets/AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) を参照してください。
+詳細は文献 [1] や [AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) を参照してください。
 
 ## ライセンス
 
-The Unlicense. For the details, see [LICENSE](./LICENSE).
+ライセンスは The Unlicense です。詳細は [LICENSE](./LICENSE) を参照してください.
 
 ## 参考文献
 
