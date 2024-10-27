@@ -1,5 +1,7 @@
 # Audio Pitch Estimator for Unity
 
+[English](README.md)
+
 Unity上で**基本周波数**（音の高さ）をリアルタイム検出・推定するスクリプトです。
 
 スクリプトファイル [AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) を Asset ディレクトリへコピーするだけで導入できます。Unityの基本コンポーネント以外に外部依存関係はありません。
@@ -20,6 +22,8 @@ Unity上で**基本周波数**（音の高さ）をリアルタイム検出・�
 ## 使い方
 
 適当なゲームオブジェクトに `AudioPitchEstimator.cs` をアタッチしてください。
+
+調整パラメータは以下の通りです。これらのパラメータは、どのような音声が入力されるか（例：声の音域など）に応じて設定してください。
 
 ![inspector](./readme/inspector.png)
 

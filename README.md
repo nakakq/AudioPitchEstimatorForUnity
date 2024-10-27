@@ -1,5 +1,7 @@
 # Audio Pitch Estimator for Unity
 
+[日本語](README.ja.md)
+
 A simple C# script to estimate **fundamental frequency** from Unity's AudioSource component.
 
 Just copy [AudioPitchEstimator.cs](./Assets/AudioPitchEstimator.cs) to your Asset directory. This script doesn't require any external dependencies except for built-in Unity components.
@@ -23,7 +25,7 @@ This repository has 2 examples:
 
 Please attach the `AudioPitchEstimator.cs` to your GameObject.
 
-There are several parameters:
+There are several parameters. You should set these parameters according to the typical characteristics of your input audio signals (e.g. the range of the voice).
 
 ![inspector](./readme/inspector.png)
 
