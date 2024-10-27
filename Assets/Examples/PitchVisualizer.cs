@@ -17,16 +17,16 @@ public class PitchVisualizer : MonoBehaviour
 
     void Start()
     {
-        // 一定間隔で呼び出す（Updateだと速すぎる）
+        // call at slow intervals (Update() is generally too fast)
         InvokeRepeating(nameof(UpdateVisualizer), 0, 1.0f / estimateRate);
     }
 
     void UpdateVisualizer()
     {
-        // 基本周波数を推定
+        // estimate the fundamental frequency
         var frequency = estimator.Estimate(audioSource);
 
-        // SRHスコア
+        // visualize SRH score
         var srh = estimator.SRH;
         var numPoints = srh.Count;
         var positions = new Vector3[numPoints];
@@ -39,10 +39,10 @@ public class PitchVisualizer : MonoBehaviour
         lineSRH.positionCount = numPoints;
         lineSRH.SetPositions(positions);
 
-        // 基本周波数
+        // visualize fundamental frequency
         if (float.IsNaN(frequency))
         {
-            // 検出されなかったので非表示
+            // hide the line when it does not exist
             lineFrequency.positionCount = 0;
         }
         else
@@ -51,20 +51,22 @@ public class PitchVisualizer : MonoBehaviour
             var max = estimator.frequencyMax;
             var position = (frequency - min) / (max - min) - 0.5f;
 
+            // indicate the frequency with LineRenderer
             lineFrequency.positionCount = 2;
             lineFrequency.SetPosition(0, new Vector3(position, +1, 0));
             lineFrequency.SetPosition(1, new Vector3(position, -1, 0));
 
+            // indicate the latest frequency with TextMesh
             marker.position = new Vector3(position, 0, 0);
             textFrequency.text = string.Format("{0}\n{1:0.0} Hz", GetNameFromFrequency(frequency), frequency);
         }
 
-        // 下限・上限周波数
+        // visualize lowest/highest frequency
         textMin.text = string.Format("{0} Hz", estimator.frequencyMin);
         textMax.text = string.Format("{0} Hz", estimator.frequencyMax);
     }
 
-    // 周波数 → 音名
+    // frequency -> pitch name
     string GetNameFromFrequency(float frequency)
     {
         var noteNumber = Mathf.RoundToInt(12 * Mathf.Log(frequency / 440) / Mathf.Log(2) + 69);

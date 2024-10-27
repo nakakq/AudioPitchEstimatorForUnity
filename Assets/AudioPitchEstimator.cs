@@ -2,31 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// SRH (Summation of Residual Harmonics) による基本周波数推定
+// Fundamental frequency estimation using Summation of Residual Harmonics (SRH)
 // T. Drugman and A. Alwan: "Joint Robust Voicing Detection and Pitch Estimation Based on Residual Harmonics", Interspeech'11, 2011.
 
 public class AudioPitchEstimator : MonoBehaviour
 {
-    [Tooltip("最低周波数 [Hz]")]
+    [Tooltip("Lowest frequency that can estimate [Hz]")]
     [Range(40, 150)]
     public int frequencyMin = 40;
 
-    [Tooltip("最高周波数 [Hz]")]
+    [Tooltip("Highest frequency that can estimate [Hz]")]
     [Range(300, 1200)]
     public int frequencyMax = 600;
 
-    [Tooltip("推定に利用する倍音の個数")]
+    [Tooltip("Number of overtones to use for estimation")]
     [Range(1, 8)]
     public int harmonicsToUse = 5;
 
-    [Tooltip("スペクトルの移動平均バンド幅 [Hz]\n幅が大きいほど滑らかになりますが、精度が下がります")]
+    [Tooltip("Frequency bandwidth of spectral smoothing filter [Hz]\nWider bandwidth smoothes the estimation, however the accuracy decreases.")]
     public float smoothingWidth = 500;
 
-    [Tooltip("有声音判定のしきい値\n大きな値ほど判定が厳しくなります")]
+    [Tooltip("Threshold to judge silence or not\nLarger the value, stricter the judgment.")]
     public float thresholdSRH = 7;
 
     const int spectrumSize = 1024;
-    const int outputResolution = 200; // SRHの周波数軸の要素数（小さくすると計算負荷が下がる）
+    const int outputResolution = 200; // frequency axis resolution (decreasing this will reduce the calculation load)
     float[] spectrum = new float[spectrumSize];
     float[] specRaw = new float[spectrumSize];
     float[] specCum = new float[spectrumSize];
@@ -36,10 +36,10 @@ public class AudioPitchEstimator : MonoBehaviour
     public List<float> SRH => new List<float>(srh);
 
     /// <summary>
-    /// 基本周波数を推定します
+    /// Estimates the fundamental frequency
     /// </summary>
-    /// <param name="audioSource">入力音源</param>
-    /// <returns>基本周波数[Hz] (存在しないときfloat.NaN)</returns>
+    /// <param name="audioSource">Input audio source</param>
+    /// <returns>Fundamental frequency [Hz] (float.NaN if it does not exist)</returns>
     public float Estimate(AudioSource audioSource)
     {
         var nyquistFreq = AudioSettings.outputSampleRate / 2.0f;
